@@ -89,12 +89,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
+    marginBottom: 12,
   },
   btn: {
     backgroundColor: "#2F6FED",
     borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginTop: 6,
   },
   btnText: { color: "white", fontWeight: "700" },
   card: {
