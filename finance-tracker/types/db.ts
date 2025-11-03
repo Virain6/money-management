@@ -34,7 +34,7 @@ export type PersonalSpendRow = {
   id: string;
   user_id: string;
   amount: number;
-  category: string;
+  budget_id: string | null;
   date: number;
   note: string | null;
 };

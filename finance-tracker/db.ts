@@ -4,8 +4,10 @@ import { openDatabaseSync } from "expo-sqlite";
 export const db = openDatabaseSync("finance.db");
 
 // Run once on app start
+
 export async function ensureSchema() {
   // Base schema
+
   await db.execAsync(`
   PRAGMA foreign_keys = ON;
   PRAGMA journal_mode = WAL;
@@ -68,11 +70,23 @@ export async function ensureSchema() {
     id        TEXT PRIMARY KEY,
     user_id   TEXT NOT NULL,
     amount    REAL NOT NULL,
-    category  TEXT NOT NULL,
+    budget_id TEXT,
     date      INTEGER NOT NULL,
     note      TEXT,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
   );
+
+    -- Budgets (per user, per month)
+  CREATE TABLE IF NOT EXISTS budgets (
+    id        TEXT PRIMARY KEY,
+    user_id   TEXT NOT NULL,
+    name      TEXT NOT NULL,
+    month     INTEGER NOT NULL,   -- YYYYMM
+    amount    REAL NOT NULL,      -- monthly cap
+    UNIQUE (user_id, name, month),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  );
+
 
   -- Helpful indexes
   CREATE INDEX IF NOT EXISTS idx_expenses_date ON expenses(date);

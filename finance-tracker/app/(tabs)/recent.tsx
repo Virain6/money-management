@@ -132,26 +132,47 @@ export default function RecentScreen() {
                 }
               }}
             >
-              <View style={styles.card}>
-                <View>
-                  <Text style={styles.lineTop}>
-                    {item.type === "expense" ? "Shared • " : "Personal • "}
-                    {item.title}
-                  </Text>
-                  <Text style={styles.lineSub}>
-                    {new Date(item.date).toLocaleDateString()} • $
-                    {item.amount.toFixed(2)}
-                  </Text>
+              <Pressable onPress={() => onEdit(item)}>
+                <View style={styles.card}>
+                  <View>
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      {item.type === "expense" ? (
+                        <Ionicons
+                          name="people-outline"
+                          size={16}
+                          color="#3B82F6"
+                          style={{ marginRight: 4 }}
+                        />
+                      ) : (
+                        <Ionicons
+                          name="person-outline"
+                          size={16}
+                          color="#10B981"
+                          style={{ marginRight: 4 }}
+                        />
+                      )}
+                      <Text
+                        style={[
+                          styles.lineTop,
+                          {
+                            color:
+                              item.type === "expense" ? "#60A5FA" : "#6EE7B7",
+                          },
+                        ]}
+                      >
+                        {item.type === "expense" ? "Shared • " : "Personal • "}
+                        {item.title}
+                      </Text>
+                    </View>
+                    <Text style={styles.lineSub}>
+                      {new Date(item.date).toLocaleDateString()} • $
+                      {item.amount.toFixed(2)}
+                    </Text>
+                  </View>
                 </View>
-                <View style={{ flexDirection: "row", gap: 10 }}>
-                  <Pressable
-                    onPress={() => onEdit(item)}
-                    style={styles.smallBtn}
-                  >
-                    <Text style={styles.smallBtnText}>Edit</Text>
-                  </Pressable>
-                </View>
-              </View>
+              </Pressable>
             </Swipeable>
           )}
         />

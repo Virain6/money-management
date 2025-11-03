@@ -23,13 +23,15 @@ export async function listRecentTransactions(
   const spends = await db.getAllAsync<{
     id: string;
     note: string | null;
-    category: string;
+    budget_id: string | null;
+    budget_name: string | null;
     amount: number;
     date: number;
   }>(
-    `SELECT id, note, category, amount, date
-     FROM personal_spend
-     ORDER BY date DESC
+    `SELECT s.id, s.note, s.budget_id, b.name AS budget_name, s.amount, s.date
+     FROM personal_spend s
+     LEFT JOIN budgets b ON b.id = s.budget_id
+     ORDER BY s.date DESC
      LIMIT ?`,
     [limit]
   );
@@ -45,7 +47,7 @@ export async function listRecentTransactions(
   const mappedS = spends.map((s) => ({
     type: "spend" as const,
     id: s.id,
-    title: s.note ?? s.category,
+    title: s.note ?? s.budget_name ?? "Personal spend",
     amount: s.amount,
     date: s.date,
   }));

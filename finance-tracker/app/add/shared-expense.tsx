@@ -19,6 +19,7 @@ import {
   getSelectedMemberIds,
   subscribeSelection,
 } from "../../lib/memberSelectionStore";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function AddSharedExpense() {
   const router = useRouter();
@@ -128,7 +129,10 @@ export default function AddSharedExpense() {
     <SafeAreaView style={styles.sa} edges={["top"]}>
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.title}>Shared Expense</Text>
+        <View style={styles.titleRow}>
+          <Ionicons name="people-outline" color="#3B82F6" size={30} />
+          <Text style={styles.title}>Shared Expense</Text>
+        </View>
 
         <TextInput
           placeholder="Description (e.g., Sushi Night)"
@@ -279,8 +283,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#E5E7EB",
-    marginVertical: 12,
+    color: "#3B82F6",
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 12,
   },
   input: {
     backgroundColor: "#111827",

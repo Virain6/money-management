@@ -75,7 +75,7 @@ export default function TabsLayout() {
         options={{
           title: "Budgets",
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="attach-money" color={color} size={size} />
+            <Ionicons name="pricetags-outline" color={color} size={size - 2} />
           ),
         }}
       />
@@ -85,7 +85,7 @@ export default function TabsLayout() {
           title: "＋",
           tabBarLabel: "Add",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="add-circle-outline" color={color} size={size + 8} />
+            <Ionicons name="add-circle-outline" color={color} size={size + 4} />
           ),
         }}
       />
@@ -94,7 +94,7 @@ export default function TabsLayout() {
         options={{
           title: "My Spending",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="wallet-outline" color={color} size={size} />
+            <Ionicons name="wallet-outline" color={color} size={size - 2} />
           ),
         }}
       />

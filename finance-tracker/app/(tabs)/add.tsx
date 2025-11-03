@@ -16,34 +16,47 @@ export default function AddHub() {
         </View>
 
         <Pressable
-          style={styles.card}
+          style={[
+            styles.card,
+            { borderLeftWidth: 2, borderLeftColor: "#F59E0B" },
+          ]}
           onPress={() => router.push("/add/person")}
         >
           <View style={styles.row}>
-            <Ionicons name="person-add-outline" size={20} color="#E5E7EB" />
-            <Text style={styles.cardTitle}>Person</Text>
+            <Ionicons name="person-add-outline" size={20} color="#F59E0B" />
+            <Text style={[styles.cardTitle, { color: "#F59E0B" }]}>Person</Text>
           </View>
           <Text style={styles.cardSub}>Name & email</Text>
         </Pressable>
 
         <Pressable
-          style={styles.card}
+          style={[
+            styles.card,
+            { borderLeftWidth: 2, borderLeftColor: "#3B82F6" },
+          ]}
           onPress={() => router.push("/add/shared-expense")}
         >
           <View style={styles.row}>
-            <Ionicons name="people-outline" size={20} color="#E5E7EB" />
-            <Text style={styles.cardTitle}>Shared Expense</Text>
+            <Ionicons name="people-outline" size={20} color="#3B82F6" />
+            <Text style={[styles.cardTitle, { color: "#3B82F6" }]}>
+              Shared Expense
+            </Text>
           </View>
           <Text style={styles.cardSub}>Split equally first</Text>
         </Pressable>
 
         <Pressable
-          style={styles.card}
+          style={[
+            styles.card,
+            { borderLeftWidth: 2, borderLeftColor: "#10B981" },
+          ]}
           onPress={() => router.push("/add/personal-spend")}
         >
           <View style={styles.row}>
-            <Ionicons name="wallet-outline" size={20} color="#E5E7EB" />
-            <Text style={styles.cardTitle}>Personal Spend</Text>
+            <Ionicons name="wallet-outline" size={20} color="#10B981" />
+            <Text style={[styles.cardTitle, { color: "#10B981" }]}>
+              Personal Expense
+            </Text>
           </View>
           <Text style={styles.cardSub}>Category totals</Text>
         </Pressable>

@@ -24,6 +24,7 @@ import {
   setSelectedMemberIds,
   subscribeSelection,
 } from "../../../lib/memberSelectionStore";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function EditSharedExpense() {
   const router = useRouter();
@@ -164,23 +165,9 @@ export default function EditSharedExpense() {
     <SafeAreaView style={styles.sa} edges={["top"]}>
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.title}>Edit Shared Expense</Text>
-
-        <Pressable style={styles.secondaryBtn} onPress={openMemberPicker}>
-          <Text style={styles.secondaryBtnText}>Edit members</Text>
-        </Pressable>
-
-        {/* chips */}
-        <View style={styles.chipRow}>
-          {selectedUsers.length === 0 ? (
-            <Text style={styles.muted}>No members selected</Text>
-          ) : (
-            selectedUsers.map((u) => (
-              <View key={u.id} style={styles.chip}>
-                <Text style={styles.chipText}>{u.display_name}</Text>
-              </View>
-            ))
-          )}
+        <View style={styles.titleRow}>
+          <Ionicons name="people-outline" color="#3B82F6" size={30} />
+          <Text style={styles.title}>Edit Shared Expense</Text>
         </View>
 
         <TextInput
@@ -228,6 +215,9 @@ export default function EditSharedExpense() {
             );
           }}
         />
+        <Pressable style={styles.secondaryBtn} onPress={openMemberPicker}>
+          <Text style={styles.secondaryBtnText}>Edit members</Text>
+        </Pressable>
 
         <Text style={styles.subhead}>Split Method</Text>
         <View style={styles.segRow}>
@@ -326,8 +316,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#E5E7EB",
-    marginVertical: 12,
+    color: "#3B82F6",
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 12,
   },
   input: {
     backgroundColor: "#111827",
@@ -380,6 +375,7 @@ const styles = StyleSheet.create({
   },
   rowText: { color: "#E5E7EB", fontWeight: "600" },
   helper: { color: "#9CA3AF", marginTop: 4 },
+  muted: { color: "#9CA3AF" },
   smallInput: {
     minWidth: 90,
     backgroundColor: "#0B0F14",

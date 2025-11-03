@@ -4,22 +4,22 @@ import * as Crypto from "expo-crypto";
 
 export async function addPersonalSpend(
   amount: number,
-  category: string,
+  budgetId: string | null,
   note?: string,
   date?: number
 ) {
   const id = await Crypto.randomUUID();
   await db.runAsync(
-    `INSERT INTO personal_spend (id, user_id, amount, category, date, note)
+    `INSERT INTO personal_spend (id, user_id, amount, budget_id, date, note)
      VALUES (?, 'me', ?, ?, ?, ?)`,
-    [id, amount, category, date ?? Date.now(), note ?? null]
+    [id, amount, budgetId, date ?? Date.now(), note ?? null]
   );
   return id;
 }
 
 export async function listPersonalSpendByMonth(
   yyyymm: number,
-  category?: string
+  filter: { budgetId?: string } | "All"
 ) {
   const start = new Date(
     String(yyyymm).slice(0, 4) + "-" + String(yyyymm).slice(4) + "-01"
@@ -30,11 +30,11 @@ export async function listPersonalSpendByMonth(
   endMonth.setMonth(endMonth.getMonth() + 1);
   const end = endMonth.getTime();
 
-  if (category && category !== "All") {
+  if (filter !== "All" && filter?.budgetId) {
     return db.getAllAsync<PersonalSpendRow>(
-      `SELECT * FROM personal_spend WHERE user_id='me' AND date >= ? AND date < ? AND category = ?
+      `SELECT * FROM personal_spend WHERE user_id='me' AND date >= ? AND date < ? AND budget_id = ?
        ORDER BY date DESC`,
-      [start, end, category]
+      [start, end, filter.budgetId]
     );
   }
   return db.getAllAsync<PersonalSpendRow>(
@@ -53,7 +53,7 @@ export async function getPersonalSpendById(id: string) {
 
 export async function updatePersonalSpendBasic(
   id: string,
-  fields: { amount?: number; category?: string; note?: string }
+  fields: { amount?: number; budgetId?: string | null; note?: string }
 ) {
   const sets: string[] = [];
   const params: any[] = [];
@@ -61,9 +61,9 @@ export async function updatePersonalSpendBasic(
     sets.push("amount = ?");
     params.push(fields.amount);
   }
-  if (fields.category !== undefined) {
-    sets.push("category = ?");
-    params.push(fields.category ?? null);
+  if (fields.budgetId !== undefined) {
+    sets.push("budget_id = ?");
+    params.push(fields.budgetId ?? null);
   }
   if (fields.note !== undefined) {
     sets.push("note = ?");

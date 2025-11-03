@@ -33,7 +33,7 @@ export default function AddPersonScreen() {
       <StatusBar style="light" />
       <View>
         <View style={styles.titleRow}>
-          <Octicons name="person-add" color="#E5E7EB" size={30} />
+          <Octicons name="person-add" color="#F59E0B" size={30} />
           <Text style={styles.title}>Add Person</Text>
         </View>
 
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#E5E7EB",
+    color: "#F59E0B",
   },
   titleRow: {
     flexDirection: "row",

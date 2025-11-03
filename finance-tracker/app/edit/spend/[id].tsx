@@ -15,33 +15,50 @@ import {
   updatePersonalSpendBasic,
   deletePersonalSpend,
 } from "../../../data/spend";
+import { Picker } from "@react-native-picker/picker";
+import {
+  listBudgetsByMonth,
+  ensureRecurringBudgets,
+  type BudgetRow,
+} from "../../../data/budgets";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function EditSpend() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
+  const [budgets, setBudgets] = useState<BudgetRow[]>([]);
+  const [budgetId, setBudgetId] = useState<string | null>(null);
+  const [spendMonth, setSpendMonth] = useState<number | null>(null); // YYYYMM for this spend
   const [note, setNote] = useState("");
 
   useEffect(() => {
     (async () => {
       if (!id) return;
-      const row = await getPersonalSpendById(id);
+      const row = await getPersonalSpendById(String(id));
       if (!row) {
         Alert.alert("Not found");
         router.back();
         return;
       }
       setAmount(String(row.amount));
-      setCategory(row.category);
       setNote(row.note ?? "");
+      // derive month from row.date (ms) -> YYYYMM
+      const d = new Date(row.date);
+      const m = d.getFullYear() * 100 + (d.getMonth() + 1);
+      setSpendMonth(m);
+      // ensure recurring templates are materialized for that month, then load
+      await ensureRecurringBudgets(m);
+      const b = await listBudgetsByMonth(m);
+      setBudgets(b);
+      setBudgetId(row.budget_id ?? null);
     })();
   }, [id]);
 
   async function onSave() {
     const val = Number(amount);
     if (isNaN(val) || val <= 0) return Alert.alert("Amount must be > 0");
-    await updatePersonalSpendBasic(String(id), { amount: val, category, note });
+    await updatePersonalSpendBasic(String(id), { amount: val, budgetId, note });
     router.back();
   }
 
@@ -63,7 +80,10 @@ export default function EditSpend() {
     <SafeAreaView style={styles.sa} edges={["top"]}>
       <StatusBar style="light" />
       <View style={styles.container}>
-        <Text style={styles.title}>Edit Personal Spend</Text>
+        <View style={styles.titleRow}>
+          <Ionicons name="person-outline" color="#10B981" size={30} />
+          <Text style={styles.title}>Edit Personal Expense</Text>
+        </View>
         <TextInput
           placeholder="Amount"
           placeholderTextColor="#6B7280"
@@ -72,13 +92,28 @@ export default function EditSpend() {
           onChangeText={setAmount}
           style={styles.input}
         />
-        <TextInput
-          placeholder="Category"
-          placeholderTextColor="#6B7280"
-          value={category}
-          onChangeText={setCategory}
-          style={styles.input}
-        />
+        <View style={styles.pickerCard}>
+          <Text style={styles.pickerLabel}>Budget</Text>
+          <Picker
+            selectedValue={budgetId}
+            onValueChange={(value) => setBudgetId(value)}
+            dropdownIconColor="#9CA3AF"
+            style={{ color: "#E5E7EB" }}
+          >
+            {budgets.length === 0 ? (
+              <Picker.Item label="(No budgets — select None)" value={null} />
+            ) : (
+              budgets.map((b) => (
+                <Picker.Item
+                  key={b.id}
+                  label={`${b.name} ($${b.amount.toFixed(2)})`}
+                  value={b.id}
+                />
+              ))
+            )}
+            <Picker.Item label="None" value={null} />
+          </Picker>
+        </View>
         <TextInput
           placeholder="Note (optional)"
           placeholderTextColor="#6B7280"
@@ -103,7 +138,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#E5E7EB",
+    color: "#10B981",
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
     marginBottom: 12,
   },
   input: {
@@ -123,4 +163,11 @@ const styles = StyleSheet.create({
   },
   btnDanger: { backgroundColor: "#EF4444" },
   btnText: { color: "white", fontWeight: "700" },
+  pickerCard: {
+    backgroundColor: "#111827",
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+  },
+  pickerLabel: { color: "#9CA3AF", marginBottom: 6 },
 });
