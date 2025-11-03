@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     backgroundColor: "#111827",
   },
-  chipActive: { backgroundColor: "#2F6FED" },
+  chipActive: { backgroundColor: "#8B5CF6" },
   chipText: { color: "#9CA3AF" },
   chipTextActive: { color: "white", fontWeight: "600" },
   totalCard: {
