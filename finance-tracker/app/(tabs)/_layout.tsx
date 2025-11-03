@@ -62,20 +62,20 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
+        name="spending"
+        options={{
+          title: "My Spending",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="wallet-outline" color={color} size={size - 2} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="owings"
         options={{
           title: "Owings",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people-outline" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="budgets"
-        options={{
-          title: "Budgets",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="pricetags-outline" color={color} size={size - 2} />
           ),
         }}
       />
@@ -86,15 +86,6 @@ export default function TabsLayout() {
           tabBarLabel: "Add",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="add-circle-outline" color={color} size={size + 4} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="spending"
-        options={{
-          title: "My Spending",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="wallet-outline" color={color} size={size - 2} />
           ),
         }}
       />

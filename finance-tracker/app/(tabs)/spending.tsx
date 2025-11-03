@@ -25,6 +25,7 @@ import {
 } from "../../data/budgets";
 import * as Haptics from "expo-haptics";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 function getYYYYMM(d = new Date()) {
   return d.getFullYear() * 100 + (d.getMonth() + 1);
@@ -36,6 +37,8 @@ export default function SpendingScreen() {
   const [budgets, setBudgets] = useState<BudgetRow[]>([]);
   const [filterBudgetId, setFilterBudgetId] = useState<string | null>(null); // null = All
   const [refreshing, setRefreshing] = useState(false);
+
+  const router = useRouter();
 
   const [chartPoints, setChartPoints] = useState<
     { label: string; value: number; over?: boolean }[]
@@ -265,14 +268,56 @@ export default function SpendingScreen() {
         </View>
 
         <View style={styles.totalCard}>
-          <Text style={styles.totalLabel}>Total this month</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={styles.totalLabel}>
+              {filterBudgetId
+                ? `Total for ${budgetNameById.get(filterBudgetId) ?? "Budget"}`
+                : "Total this month"}
+            </Text>
+            {filterBudgetId ? (
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => router.push(`/edit/budget/${filterBudgetId}`)}
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  borderRadius: 8,
+                  backgroundColor: "#1F2937",
+                }}
+              >
+                <View
+                  style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
+                >
+                  <Ionicons name="create-outline" size={16} color="#E5E7EB" />
+                  <Text style={{ color: "#E5E7EB", fontWeight: "600" }}>
+                    Edit
+                  </Text>
+                </View>
+              </Pressable>
+            ) : null}
+          </View>
           <Text
             style={[
               styles.totalValue,
               totalColor ? { color: totalColor } : null,
             ]}
           >
-            ${total.toFixed(2)}
+            {filterBudgetId
+              ? (() => {
+                  const cap = budgets.find(
+                    (b) => b.id === filterBudgetId
+                  )?.amount;
+                  return cap != null
+                    ? `$${total.toFixed(2)} / $${cap.toFixed(2)}`
+                    : `$${total.toFixed(2)}`;
+                })()
+              : `$${total.toFixed(2)}`}
           </Text>
         </View>
 

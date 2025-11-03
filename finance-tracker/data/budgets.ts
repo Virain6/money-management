@@ -62,14 +62,15 @@ export async function deleteRecurringBudget(id: string) {
 }
 
 /** Ensure every recurring budget has a concrete row for a given month. */
-export async function ensureRecurringBudgets(yyyymm: number) {
-  // Load recurring templates
-  const templates = await listRecurringBudgets();
-  if (!templates.length) return;
+const _ensureFlight = new Map<number, Promise<void>>();
 
-  // Insert any missing (user_id, name, month) combos for this month
-  await db.runAsync("BEGIN");
-  try {
+export async function ensureRecurringBudgets(yyyymm: number) {
+  // de-duplicate concurrent calls per-month to avoid nested/overlapping work
+  if (_ensureFlight.has(yyyymm)) return _ensureFlight.get(yyyymm)!;
+
+  const p = (async () => {
+    const templates = await listRecurringBudgets();
+    if (!templates.length) return;
     for (const t of templates) {
       await db.runAsync(
         `INSERT OR IGNORE INTO budgets (id, user_id, name, month, amount)
@@ -77,10 +78,13 @@ export async function ensureRecurringBudgets(yyyymm: number) {
         [await Crypto.randomUUID(), t.name, yyyymm, t.amount]
       );
     }
-    await db.runAsync("COMMIT");
-  } catch (e) {
-    await db.runAsync("ROLLBACK");
-    throw e;
+  })();
+
+  _ensureFlight.set(yyyymm, p);
+  try {
+    await p;
+  } finally {
+    _ensureFlight.delete(yyyymm);
   }
 }
 

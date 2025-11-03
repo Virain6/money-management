@@ -60,6 +60,20 @@ export default function AddHub() {
           </View>
           <Text style={styles.cardSub}>Category totals</Text>
         </Pressable>
+
+        <Pressable
+          style={[
+            styles.card,
+            { borderLeftWidth: 2, borderLeftColor: "#8B5CF6" },
+          ]}
+          onPress={() => router.push("/add/budgets")}
+        >
+          <View style={styles.row}>
+            <Ionicons name="bar-chart-outline" size={20} color="#8B5CF6" />
+            <Text style={[styles.cardTitle, { color: "#8B5CF6" }]}>Budget</Text>
+          </View>
+          <Text style={styles.cardSub}>Category totals</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
